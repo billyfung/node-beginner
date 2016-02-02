@@ -1,16 +1,20 @@
 extends layout
 
 block content
-  div.ui.middle.aligned.center.aligned.grid
-    div.column
+  .ui.middle.aligned.center.aligned.grid
+    .column
         h2.ui.teal.header
-            div.content Log-in to your account
+            .content Log-in to your account
         form.ui.large.form
-            div.ui.stacked.segment
-                div.field
-                    div.ui.left.input
+            .ui.stacked.segment
+                .field
+                    .ui.left.input
                         input(type="text", name="email", placeholder="E-mail address")
-                div.field
-                    div.ui.left.input
+                .field
+                    .ui.left.input
                         input(type="password",  name="password", placeholder="Password")
-                div.ui.fluid.large.teal.submit.button Login        
+                .ui.fluid.large.teal.submit.button Login  
+            .ui.error.message
+        .ui.message New to us? 
+            a(href='#') Sign up
+
