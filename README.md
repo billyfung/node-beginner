@@ -89,4 +89,8 @@ Looking at the `/routes/index.js` file, you can see that inside is some Javascri
 So for the purposes of this framework, the router method creates an object that can be used for HTTP methods (get, put, post...). So the `router` variable is then used to GET / and pass the title, and render the response which is in `index.jade` 
 
 ###`/views/index.jade`
-After Express routes the GET request, the response is rendered based on what is in `index.jade`. Looking into the file, you can see that there isn't much in there. 
+After Express routes the GET request, the response is rendered based on what is in `index.jade`. Looking into the file, you can see that the page layout is set up in there, with the stylesheet being chosen. So it is within here that you can use a different ui framework, like [Bootstrap](http://getbootstrap.com) or [Semantic UI](http://semantic-ui.com). 
+
+##Changing the front end
+Now you know most of the basic information of what files do what within Express, and the workflow, the next step is to design the front end. You could also do the backend first as well, no strict rules to follow here. 
+
