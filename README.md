@@ -74,7 +74,7 @@ npm start
 ```
 The Node.js web server is located at [http://localhost:3000](http://localhost:3000). 
 
-![express viewexpress](/express-screen.png)
+![express viewexpress](/public/images/express-screen.png)
 
 ##Understanding Express
 So now you should have the web app skeleton set up for Node.js, so the next step is to use the framework to make the web application. Currently the view that is rendered at [http://localhost:3000](http://localhost:3000) consists of the Node.js server from `app.js` and 3 files in the project folder: `routes/index.js`, `views/index.jade`, and `views/layout.jade`. It is here that Node.js with Express differs a bit from tradiational MVC framework. Routes in Express are similar to controllers, but not really because routes also have a bit of the model in them. 
@@ -133,6 +133,22 @@ block content
 ```
 Now when you run `npm start` and view `http://localhost:3000` you should see some resemblance of a login page. 
 
-![without css image](/semantic-nocss.png)
+![without css image](/public/images/semantic-nocss.png)
 
+Not quite there yet, some CSS touchups is needed to finalize the look. The `layout.jade` file has a reference to `/stylesheets/style.css` so it is inside there that changes to CSS can be applied. Add this code into the file to clean up the look:
+```
+body {
+      background-color: #DADADA;
+    }
+body > .grid {
+      height: 100%;
+    }
+.image {
+      margin-top: -100px;
+    }
+.column {
+      max-width: 450px;
+    }
+```
+There you have it, a simple login page done. The next step will be to make the sign in page do something. 
 
