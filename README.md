@@ -3,7 +3,7 @@ Example for implementing Github based authentication in Node.js
 
 Shows the end-to-end process from creating the node application to adding authentication 
 
-#First steps
+##First steps
 
 If you've been wanting to try out Node.js for awhile, but haven't found a concise enough tutorial to walk you through a simple Node.js application, here's another one you can try. The tutorial will hopefully walk you through setting up a Node.js app where users can sign up or log in through Github. 
 
@@ -118,7 +118,7 @@ block content
     .column
         h2.ui.teal.header
             .content Log-in to your account
-        form.ui.large.form
+        form.ui.large.form(method='POST')
             .ui.stacked.segment
                 .field
                     .ui.left.input
@@ -131,7 +131,7 @@ block content
         .ui.message New to us? 
             a(href='#') Sign up 
 ```
-Now when you run `npm start` and view `http://localhost:3000` you should see some resemblance of a login page. 
+Now when you run `npm start` and view `http://localhost:3000` you should see some resemblance of a login page. It is noteworthy that the form has `method='POST'` in order to send the data to the Node.js server. 
 
 ![without css image](/public/images/semantic-nocss.png)
 
@@ -195,3 +195,13 @@ Don't forget to reference the script within `layout.jade` otherwise it won't be 
 ```
 script(src='/javascripts/main.js')
 ```
+
+##Github authentication
+Now that the login page is all set up, the next step is to add the Github authentication to the application. The go-to authentication middleware for Node.js is [Passport](http://passportjs.org), which has a npm package called `passport-github` that uses the OAuth 2.0 API for Github authentication. To use the package for your Node.js application run:
+```
+npm install passport-github
+```
+
+Now with that installed, to make sure of the strategy, the application must be configured properly for it.
+ 
+####*`app.js`*

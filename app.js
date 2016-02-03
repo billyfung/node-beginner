@@ -1,9 +1,13 @@
+/**
+  * Module dependencies
+  */
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport')
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -22,14 +26,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', routes);
 app.use('/users', users);
+app.get('/account', passportConf.isAuthenticated, userController.getAccount);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
+});
+
+
+//OAuth authentication route
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), 
+  function(req, res) {
+  res.redirect('/account');
 });
 
 // error handlers
