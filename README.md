@@ -1,4 +1,4 @@
-# Github authentication and Node
+# Node.js web application with Github authentication
 Example for implementing Github based authentication in Node.js
 
 Shows the end-to-end process from creating the node application to adding authentication 
@@ -149,6 +149,49 @@ body > .grid {
 .column {
       max-width: 450px;
     }
+``` 
+In order to set restrictions on the text entered into the email and password boxes, you will need to set up a function to check. 
+There you have it, a simple login page done. The next step will be to make the sign in page do something. To do this, you can write a javascript function, and place the file `main.js` within `/public/javascripts`:
 ```
-There you have it, a simple login page done. The next step will be to make the sign in page do something. 
+$(document)
+    .ready(function() {
+      $('.ui.form')
+        .form({
+          fields: {
+            email: {
+              identifier  : 'email',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : 'Please enter your e-mail'
+                },
+                {
+                  type   : 'email',
+                  prompt : 'Please enter a valid e-mail'
+                }
+              ]
+            },
+            password: {
+              identifier  : 'password',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : 'Please enter your password'
+                },
+                {
+                  type   : 'length[6]',
+                  prompt : 'Your password must be at least 6 characters'
+                }
+              ]
+            }
+          }
+        })
+      ;
+    })
+  ;
+```
+Don't forget to reference the script within `layout.jade` otherwise it won't be used for the login page. 
 
+```
+script(src='/javascripts/main.js')
+```

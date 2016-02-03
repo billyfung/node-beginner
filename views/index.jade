@@ -3,8 +3,8 @@ extends layout
 block content
   .ui.middle.aligned.center.aligned.grid
     .column
-        h2.ui.teal.header
-            .content Log-in to your account
+        h1.ui.teal.header
+            .content Sign in
         form.ui.large.form
             .ui.stacked.segment
                 .field
@@ -13,7 +13,10 @@ block content
                 .field
                     .ui.left.input
                         input(type="password",  name="password", placeholder="Password")
-                .ui.fluid.large.teal.submit.button Login  
+                .ui.fluid.large.teal.submit.button Login
+                .ui.fluid.large.blue.button(href='/auth/github') 
+                    i.github.icon
+                    | Sign in with GitHub
             .ui.error.message
         .ui.message New to us? 
             a(href='#') Sign up
