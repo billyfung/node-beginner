@@ -199,9 +199,33 @@ script(src='/javascripts/main.js')
 ##Github authentication
 Now that the login page is all set up, the next step is to add the Github authentication to the application. The go-to authentication middleware for Node.js is [Passport](http://passportjs.org), which has a npm package called `passport-github` that uses the OAuth 2.0 API for Github authentication. To use the package for your Node.js application run:
 ```
-npm install passport-github
+npm install passport-github passport
 ```
 
 Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. When a user wants to use Github to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. 
+
+The workflow will be to have the user login with Github, and then display the information showing that the user data has been obtained. 
 ####*`app.js`*
+After installing the two packages, you will need to add them into the module dependencies:
+```
+var passport = require('passport')
+var GitHubStrategy = require('passport-github').Strategy;
+```
+
+The Github authentication strategy is then used along with the application client ID and secret in the Node.js app. Configure the strategy after the Express app is initialized: 
+```
+passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+```
+You will notice here that the `callbackURL` is set to an address, one that you will need to account for when setting the routes for the application. The application will need route middleware set up to process the authentication requests, but this is very easily done with a couple `app.get` lines. 
+
 
