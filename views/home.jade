@@ -14,10 +14,9 @@ block content
                     .ui.left.input
                         input(type="password",  name="password", placeholder="Password")
                 .ui.fluid.large.teal.submit.button Login
-                .ui.fluid.large.blue.button(href='/auth/github') 
+                a(href='/auth/github').ui.fluid.large.blue.button
                     i.github.icon
                     | Sign in with GitHub
             .ui.error.message
-        .ui.message New to us? 
-            a(href='#') Sign up
+        a(href='/profile') View profile
 

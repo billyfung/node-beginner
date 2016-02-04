@@ -228,4 +228,24 @@ passport.use(new GitHubStrategy({
 ```
 You will notice here that the `callbackURL` is set to an address, one that you will need to account for when setting the routes for the application. The application will need route middleware set up to process the authentication requests, but this is very easily done with a couple `app.get` lines. 
 
+Next will be the session and user management code, used to maintain the login session and provide the ability to store user records. Generally when authenticating you will want to store the user to a database, and then Passport will deserialize the user from the session. For demonstration purposes, this Node.js will not use a database and just display the user information. 
+
+Serializing and deserializing is done with:
+```
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(null, user.id);
+  });
+});
+```
+
+After this is all done, the last steps will be to organize the routes for authentication. 
+
 
