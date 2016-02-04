@@ -202,6 +202,6 @@ Now that the login page is all set up, the next step is to add the Github authen
 npm install passport-github
 ```
 
-Now with that installed, to make sure of the strategy, the application must be configured properly for it.
- 
+Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. When a user wants to use Github to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. 
 ####*`app.js`*
+
