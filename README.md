@@ -14,6 +14,8 @@ $ CLIENT_ID=__GITHUB_CLIENT_ID__ CLIENT_SECRET=__GITHUB_CLIENT_SECRET npm start
 
 Open browser to [http://localhost:3000](http://localhost:3000) to see the application.
 
+![login](/public/images/login.png)
+
 ##Detailed Introduction
 
 If you've been wanting to try out Node.js for awhile, but haven't found a concise enough tutorial to walk you through a simple Node.js application, here's another one you can try. The tutorial will hopefully walk you through setting up a Node.js app where users can sign up or log in through GitHub. 
