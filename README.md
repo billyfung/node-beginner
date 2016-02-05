@@ -10,7 +10,7 @@ If you've been wanting to try out Node.js for awhile, but haven't found a concis
 ### Setup for OS X
 Go to [https://nodejs.org/en/](https://nodejs.org/en/) and use the package installer, it makes everything much simplier compared to older options of having to download binary and unpack. The package installer also installs npm for you, which is the node package manager. 
 
-If you run into errors, the best bet would be to search on Google for the error and see what options people have available to solve. For now this tutorial will only be for OS X, since that is what I am most comfortable with. In the future, Linux steps will be added. 
+If you run into errors, the best bet would be to search on Google for the error and see what options people have available to solve. For now this tutorial will only be for OS X.
 
 To check that everything is working correctly so far, try running the commands: 
 ```
@@ -39,14 +39,14 @@ Then you should see `Hello World` printed in your terminal, and that's the basic
 Now that the setup stuff is out of the way, it's time for the action you've been looking for. The real reason you're looking to use Node.js is so you can have Javascript executed within a web server. In Node.js, the application you want to build is actually the same as the server you want to build, so with this in mind the next step is to choose a framework that helps you with creating a server for a web application. 
 
 ## Express
-One of the common choices for a Node.js web application framework is [expressjs.com](Express). One of the reasons why it is so popular is the `express-generator` tool that Express also offers. This tools creates a web application skeleton for you, meaning all the requires files and folders for a web application is created. [Install](http://expressjs.com/en/starter/generator.html) the tool with :
+One of the common choices for a Node.js web application framework is [Express](http://expressjs.com). One of the reasons why it is so popular is the `express-generator` tool that Express also offers. This tools creates a web application skeleton for you, meaning all the requires files and folders for a web application is created. [Install](http://expressjs.com/en/starter/generator.html) the tool with :
 ```
 npm install express-generator -g
 ```
 
 The `-g` installs the package on the local npm installation directory for system-wide usage. The p
 
-To create an Express project and view it in the browser, run 
+To create an Express project run:
 ```
 express
 ```
@@ -108,7 +108,7 @@ script(src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js")
 
 This will now allow you to use Semantic UI within your `index.jade`. So far there really hasn't been much said about the file template language, but it's clearly a bit different from normal HTML. 
 
-[Jade](http://jade-lang.com) is a templating engine that relies heavily on whitespace for writing HTML, so instead of `<head>` you can just write `head` and it will be converted accordingly. It is very important that you use spaces instead of tabs, since that is a fundamental feature of Jade. Tags are automatically closed for you, and in general everything looks a bit cleaner. I won't go into a ton of detail here, the [documentation](http://jade-lang.com/reference) is a good place to learn most of the features of Jade.
+[Jade](http://jade-lang.com) is a templating engine that relies heavily on whitespace for writing HTML, so instead of `<head>` you can just write `head` and it will be converted accordingly. It is very important that you use spaces instead of tabs, since that is a fundamental feature of Jade. Tags are automatically closed for you, and in general everything looks a bit cleaner. The [documentation](http://jade-lang.com/reference) is a good place to learn most of the features of Jade.
 
 ####*`index.jade`*
 Now that the layout is set up, you can use Semantic UI within `index.jade` to define the contents of the block. To create simple page following the [login page example](http://semantic-ui.com/examples/login.html) make your file look like:
@@ -203,6 +203,7 @@ Now that the login page is all set up, the next step is to add the Github authen
 ```
 npm install passport-github passport express-session
 ```
+
 `express-session` helps to protect the app from cookie exploits, and it also stores the session data on the server by saving the session ID.
 
 Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. 
@@ -264,6 +265,7 @@ app.get('/auth/github/callback',
   //res.render('users', {user:req.user});
   res.redirect('/users');
 });
+```
 
 With all the middleware set up for authentication, the routing is fairly straightforward. The `/auth/github` route is used to begin the authentication, and the `/auth/github/callback` is the route that handles the callback from the Github strategy. It is important to remember that the callback URL is specified within the Github developer settings for the application, as well as within the Passport strategy setup. 
 
