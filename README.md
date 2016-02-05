@@ -164,6 +164,7 @@ body > .grid {
       max-width: 450px;
     }
 ``` 
+
 In order to set restrictions on the text entered into the email and password boxes, you will need to set up a function to check. 
 There you have it, a simple login page done. The next step will be to make the sign in page do something. To do this, you can write a javascript function, and place the file `main.js` within `/public/javascripts`:
 ```
@@ -218,13 +219,15 @@ npm install --save passport-github passport express-session
 
 `express-session` helps to protect the app from cookie exploits, and it also stores the session data on the server by saving the session ID.
 
-Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a GitHub developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. 
+Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the Passport authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. The authentication request is passed from the GitHub API to Passport for authentication using the strategy. In order to obtain the keys, you will need to create a GitHub developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. 
 
 ![github dev settings](/public/images/github-auth.png)
 
 When a user wants to use GitHub to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. The information from authentication is then stored within the session, which will ensure that the `req` info will be redirected to the pages accordingly. 
 
-The workflow will be to have the user login with GitHub, and then display the information showing that the user data has been obtained. 
+The workflow will be to have the user login with GitHub, authorize the application, and then display the information showing that the user data has been obtained. 
+
+###Passport configuration
 ####*`app.js`*
 After installing the two packages, you will need to add them into the module dependencies, along with `express-session` to manage the session:
 ```
@@ -268,6 +271,8 @@ It is important to note that the way the session is managed in this application 
 
 After this is all done, the last steps will be to organize the routes for authentication, so that after login the profile information will be displayed. 
 
+##Middleware for authentication
+The `authenticate()` function is used authenticate the request, and then redirect it to the proper page.
 ####Routing in *`app.js`*
 ```
 app.get('/auth/github', passport.authenticate('github'));
@@ -281,9 +286,14 @@ app.get('/auth/github/callback',
 
 With all the middleware set up for authentication, the routing is fairly straightforward. The `/auth/github` route is used to begin the authentication, and the `/auth/github/callback` is the route that handles the callback from the GitHub strategy. It is important to remember that the callback URL is specified within the GitHub developer settings for the application, as well as within the Passport strategy setup. 
 
-On a successful callback, the route handler will redirect to `/profile` where the information for the GitHub profile can be displayed. A useful thing to do is to test that the session is authenticated, by writing a `testAuthentication` function, and passing it into the route handler:
+On a successful callback, the route handler will redirect to `/users` where the information for the GitHub profile can be displayed. A useful thing to do is to test that the session is authenticated, by writing a `testAuthentication` function, and passing it into the route handler. It's also good to have a logout feature, so the session isn't hanging around. 
 ```
-app.get('/profile', ensureAuthenticated, profile)
+app.get('/users', ensureAuthenticated, users)
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+})
 
 function ensureAuthenticated(req,res,next){
   if(req.isAuthenticated())
@@ -292,8 +302,8 @@ function ensureAuthenticated(req,res,next){
 }
 ```
 
-With the routing all set in place, the last thing to do is to make sure the frontend pages are displaying the right information. 
-
+With the routing all set in place, the last thing to do is to make the frontend pages are display the information. 
+###GitHub Login information
 ####*`/routes/index.jade`*
 
 With all the `/auth/github` routing set up, you will need to create a button for GitHub login in. You can put the code under the submit button, which isn't set to do anything. 
@@ -313,7 +323,7 @@ router.get('/users', function(req, res, next) {
 ```
 
 ####*`/views/users.jade`*
-And lastly here is where the profile information from GitHub will be displayed. The information is passed through req.user in JSON format with the name `user` so it is straightforward to take the information out. 
+And lastly here is where the profile information from GitHub will be displayed. The information is passed through `req.user` in JSON format with the name `user` so it is straightforward to take the information out. 
 ```
 extends layout
 
@@ -343,10 +353,11 @@ block content
                         label Number of Public Repos
                         .ui.right.input.fluid
                             input(type="text", name="name", value='#{user._json.public_repos}')
+                    a(href='/logout').ui.fluid.large.red.button Logout 
 ```
 And with that you should be all done your Node.js application, with GitHub authentication!
 
-![profile page](/public/images/profile-page.png)
+![profile page](/public/images/profile.png)
 
 ## Deploying to Heroku
 Now with the app complete, deployment to Heroku is quick and easy. Follow the instructions at [Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction). The easiest way to to have your project saved onto GitHub first, and then use the GitHub Command Line Interface. 
