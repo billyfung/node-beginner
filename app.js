@@ -8,12 +8,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport')
+var GitHubStrategy = require('passport-github').Strategy;
+var session = require('express-session')
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,32 +24,62 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParnpmser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret:'tswift', resave: true, saveUninitialized: true}))
 
+//Initialize passport and restore authentication state if available
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', routes);
-app.use('/users', users);
-app.get('/account', passportConf.isAuthenticated, userController.getAccount);
+passport.use(new GitHubStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: '/auth/github/callback',
+  },
+  function(accessToken, refreshToken, user, cb) {
+    //User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return cb(null, user);
+    //});
+  }
+));
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  //User.findById(id, function(err, user) {
+    done(null, obj);
+  //});
+});
+
+app.get('/', index)
+
+//OAuth authentication route
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/' }), 
+  function(req, res) {
+  //res.render('profile', {user:req.user});
+  res.redirect('/users');
+});
+
+app.get('/users', ensureAuthenticated, users)
+
+function ensureAuthenticated(req,res,next){
+  if(req.isAuthenticated())
+    return next();
+  res.redirect('/');
+}
+
+// error handlers
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
-
-
-//OAuth authentication route
-app.get('/auth/github', passport.authenticate('github'));
-app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), 
-  function(req, res) {
-  res.redirect('/account');
-});
-
-// error handlers
 
 // development error handler
 // will print stacktrace
