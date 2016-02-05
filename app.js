@@ -24,7 +24,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParnpmser());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret:'tswift', resave: true, saveUninitialized: true}))
 
@@ -34,7 +34,7 @@ app.use(passport.session());
 
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    clientSecret: process.env.CLIENT_,
     callbackURL: '/auth/github/callback',
   },
   function(accessToken, refreshToken, user, cb) {
@@ -54,6 +54,11 @@ passport.deserializeUser(function(obj, done) {
   //});
 });
 
+// app.get('/', 
+//   function(req,res){
+//     res.render('home', {user:req.user});
+//   });
+
 app.get('/', index)
 
 //OAuth authentication route
@@ -65,6 +70,12 @@ app.get('/auth/github/callback',
   res.redirect('/users');
 });
 
+// app.get('/profile',
+//   function(req,res){
+//       console.log(req.user);
+//       res.render('profile', {user: req.user});
+//   });
+
 app.get('/users', ensureAuthenticated, users)
 
 function ensureAuthenticated(req,res,next){
@@ -72,7 +83,6 @@ function ensureAuthenticated(req,res,next){
     return next();
   res.redirect('/');
 }
-
 // error handlers
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
