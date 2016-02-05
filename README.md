@@ -77,7 +77,9 @@ The Node.js web server is located at [http://localhost:3000](http://localhost:30
 ![express viewexpress](/public/images/express-screen.png)
 
 ##Understanding Express
-So now you should have the web app skeleton set up for Node.js, so the next step is to use the framework to make the web application. Currently the view that is rendered at [http://localhost:3000](http://localhost:3000) consists of the Node.js server from `app.js` and 3 files in the project folder: `routes/index.js`, `views/index.jade`, and `views/layout.jade`. It is here that Node.js with Express differs a bit from tradiational MVC framework. Routes in Express are similar to controllers, but not really because routes also have a bit of the model in them. 
+So now you should have the web app skeleton set up for Node.js, so the next step is to use the framework to make the web application. Currently the view that is rendered at [http://localhost:3000](http://localhost:3000) consists of the Node.js server from `app.js` and 3 files in the project folder: `routes/index.js`, `views/index.jade`, and `views/layout.jade`. It is here that Node.js with Express differs a bit from tradiational MVC framework. Routes in Express are similar to controllers, but not really because routes also have a bit of the model in them.
+
+Another important part of Express is [middleware](http://expressjs.com/en/guide/writing-middleware.html), depending on what framework you're used to already, it might look a bit familiar. If not, middleware is essentially a means to manipulate request and response objects. This is a very powerful tool, and used very often.  
 
 ##Express app.js
 Looking into the `app.js` file, you can see that there is code already generated in there that tells Express where to look for routing files. For example, the `app.set` function tells the Express app where to look for views, and which engine to render the views with. In order to have the server point to the correct views, the routing for the application must also be set, this is done by: 
@@ -199,15 +201,21 @@ script(src='/javascripts/main.js')
 ##Github authentication
 Now that the login page is all set up, the next step is to add the Github authentication to the application. The go-to authentication middleware for Node.js is [Passport](http://passportjs.org), which has a npm package called `passport-github` that uses the OAuth 2.0 API for Github authentication. To use the package for your Node.js application run:
 ```
-npm install passport-github passport
+npm install passport-github passport express-session
 ```
+`express-session` helps to protect the app from cookie exploits, and it also stores the session data on the server by saving the session ID.
 
-Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. When a user wants to use Github to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. 
+Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. 
+
+![without css image](/public/images/github-auth.png)
+
+When a user wants to use Github to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. The information from authentication is then stored within the session, which will ensure that the `req` info will be redirected to the pages accordingly. 
 
 The workflow will be to have the user login with Github, and then display the information showing that the user data has been obtained. 
 ####*`app.js`*
-After installing the two packages, you will need to add them into the module dependencies:
+After installing the two packages, you will need to add them into the module dependencies, along with `express-session` to manage the session:
 ```
+var session = require('express-session')
 var passport = require('passport')
 var GitHubStrategy = require('passport-github').Strategy;
 ```
@@ -220,9 +228,7 @@ passport.use(new GitHubStrategy({
     callbackURL: "/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
+      return cb(null, user);
   }
 ));
 ```
@@ -240,12 +246,14 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
     done(null, user.id);
-  });
 });
 ```
+It is important to note that the way the session is managed in this application is without storing it, so the information goes straight from the authentication token to being displayed on the page, which is definitely not what you want for an actual app. This is only to demonstrate how the Github authentication works with Node.js.
 
-After this is all done, the last steps will be to organize the routes for authentication. 
+After this is all done, the last steps will be to organize the routes for authentication, so that after login the profile information will be displayed. 
+
+####Routing in `app.js`
+
 
 
