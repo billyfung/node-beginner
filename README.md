@@ -1,7 +1,17 @@
 # Node.js web application with Github authentication
-Example for implementing Github based authentication in Node.js
+Example for implementing Github based authentication in Node.js.
+```
+$ git clone https://github.com/billyfung/node-beginner.git
+$ cd node-beginner
+$ npm install
+```
+Obtain the Github CLIENT_ID and CLIENT_SECRET from the developer settings and run 
 
-Shows the end-to-end process from creating the node application to adding authentication 
+```
+$ CLIENT_ID=__GITHUB_CLIENT_ID__ CLIENT_SECRET=__GITHUB_CLIENT_SECRET npm start
+```
+
+Open browser to [http://localhost:3000](http://localhost:3000) to see the application.
 
 ##First steps
 
@@ -335,6 +345,31 @@ block content
 And with that you should be all done your Node.js application, with Github authentication!
 
 ![profile page](/public/images/profile-page.png)
+
+## Deploying to Heroku
+Now with the app complete, deployment to Heroku is quick and easy. Follow the instructions at [Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction). The easiest way to to have your project saved onto Github first, and then use the Github Command Line Interface. 
+```
+heroku login
+heroku create
+```
+For Heroku deployment, you will need to update the callback URL and homepage URL specified within Github developer settings. The Heroku url is obtained after running `heroku create`.
+
+To set the environmental variables within Heroku, use:
+```
+heroku config:set CLIENT_ID='your_client_id_here' CLIENT_SECRET='your_client_secret_here'
+```
+Then lastly, to deploy the code and view the app:
+```
+git push heroku master
+git open
+```
+  
+If you run into errors, check the logs using:
+```
+heroku logs --tail
+```
+
+After all this is done, your app should be deployed properly! It should look something like [this example](http://cryptic-escarpment-64929.herokuapp.com)
 
 
 
