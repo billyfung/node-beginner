@@ -38,9 +38,7 @@ passport.use(new GitHubStrategy({
     callbackURL: '/auth/github/callback',
   },
   function(accessToken, refreshToken, user, cb) {
-    //User.findOrCreate({ githubId: profile.id }, function (err, user) {
       return cb(null, user);
-    //});
   }
 ));
 
@@ -49,9 +47,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(obj, done) {
-  //User.findById(id, function(err, user) {
-    done(null, obj);
-  //});
+  done(null, obj);
 });
 
 app.get('/', index)
@@ -61,11 +57,15 @@ app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/' }), 
   function(req, res) {
-  //res.render('profile', {user:req.user});
   res.redirect('/users');
 });
 
 app.get('/users', ensureAuthenticated, users)
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+})
 
 function ensureAuthenticated(req,res,next){
   if(req.isAuthenticated())
