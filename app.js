@@ -34,7 +34,7 @@ app.use(passport.session());
 
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_,
+    clientSecret: process.env.CLIENT_SECRET,
     callbackURL: '/auth/github/callback',
   },
   function(accessToken, refreshToken, user, cb) {
@@ -54,11 +54,6 @@ passport.deserializeUser(function(obj, done) {
   //});
 });
 
-// app.get('/', 
-//   function(req,res){
-//     res.render('home', {user:req.user});
-//   });
-
 app.get('/', index)
 
 //OAuth authentication route
@@ -69,12 +64,6 @@ app.get('/auth/github/callback',
   //res.render('profile', {user:req.user});
   res.redirect('/users');
 });
-
-// app.get('/profile',
-//   function(req,res){
-//       console.log(req.user);
-//       res.render('profile', {user: req.user});
-//   });
 
 app.get('/users', ensureAuthenticated, users)
 
