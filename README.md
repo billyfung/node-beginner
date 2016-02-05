@@ -201,7 +201,7 @@ script(src='/javascripts/main.js')
 ##Github authentication
 Now that the login page is all set up, the next step is to add the Github authentication to the application. The go-to authentication middleware for Node.js is [Passport](http://passportjs.org), which has a npm package called `passport-github` that uses the OAuth 2.0 API for Github authentication. To use the package for your Node.js application run:
 ```
-npm install passport-github passport express-session
+npm install --save passport-github passport express-session 
 ```
 
 `express-session` helps to protect the app from cookie exploits, and it also stores the session data on the server by saving the session ID.
@@ -256,7 +256,7 @@ It is important to note that the way the session is managed in this application 
 
 After this is all done, the last steps will be to organize the routes for authentication, so that after login the profile information will be displayed. 
 
-####Routing in `app.js`
+####Routing in *`app.js`*
 ```
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', 
@@ -281,16 +281,19 @@ function ensureAuthenticated(req,res,next){
 ```
 
 With the routing all set in place, the last thing to do is to make sure the frontend pages are displaying the right information. 
-####*`/routes/index.jade`
+
+####*`/routes/index.jade`*
+
 With all the `/auth/github` routing set up, you will need to create a button for Github login in. You can put the code under the submit button, which isn't set to do anything. 
 ```
 a(href='/auth/github').ui.fluid.large.blue.button
                     i.github.icon
                     | Sign in with GitHub
-``
+```
 
 ####*`/routes/users.js`*
 Within this file, the router middleware will be used to render the user profile page. 
+
 ```
 router.get('/users', function(req, res, next) {
   res.render('users', { title: "Profile Page", user: req.user });
