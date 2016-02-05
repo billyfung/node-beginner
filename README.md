@@ -386,5 +386,8 @@ heroku logs --tail
 
 After all this is done, your app should be deployed properly! It should look something like [this example](http://cryptic-escarpment-64929.herokuapp.com)
 
+##What next?
+Now that you have the basics of Node.js and authentication down, you can build your application further by having database integration, so you can save user login information and create accounts for the app. Depending on your application purposes, PostgreSQL is a good start. You can check out [this tutorial](http://mherman.org/blog/2015/02/12/postgresql-and-nodejs/#.VrUasYQWxeo) for some further examples. 
+
 
 
