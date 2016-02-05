@@ -207,7 +207,7 @@ npm install passport-github passport express-session
 
 Now with that installed, to make sure of the strategy, the application must be configured properly for it. The general outline of how the authentication will work is that the developer will generate keys that will allow access to specific parts of user information for login. In order to obtain the keys, you will need to create a Github developer application and get the `CLIENT_ID` and `CLIENT_SECRET`. 
 
-![without css image](/public/images/github-auth.png)
+![github dev settings](/public/images/github-auth.png)
 
 When a user wants to use Github to authenticate, they will be asked to authorize the application, and then once that is done, they will be redirected back to the web app. The information from authentication is then stored within the session, which will ensure that the `req` info will be redirected to the pages accordingly. 
 
@@ -232,12 +232,14 @@ passport.use(new GitHubStrategy({
   }
 ));
 ```
-You will notice here that the `callbackURL` is set to an address, one that you will need to account for when setting the routes for the application. The application will need route middleware set up to process the authentication requests, but this is very easily done with a couple `app.get` lines. 
+You will notice here that the `callbackURL` is set to an address, one that you will need to account for when setting the routes for the application. The Github strategy will access the API, along with the user profile, the information is contained within a user object. The middleware function is used to verify the credentials, and then pass the information within `req.user` after authentication. 
 
 Next will be the session and user management code, used to maintain the login session and provide the ability to store user records. Generally when authenticating you will want to store the user to a database, and then Passport will deserialize the user from the session. For demonstration purposes, this Node.js will not use a database and just display the user information. 
 
-Serializing and deserializing is done with:
+Session management is done with:
 ```
+app.use(session({secret:'tswift', resave: true, saveUninitialized: true}))
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -254,6 +256,80 @@ It is important to note that the way the session is managed in this application 
 After this is all done, the last steps will be to organize the routes for authentication, so that after login the profile information will be displayed. 
 
 ####Routing in `app.js`
+```
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/' }), 
+  function(req, res) {
+  //res.render('users', {user:req.user});
+  res.redirect('/users');
+});
+
+With all the middleware set up for authentication, the routing is fairly straightforward. The `/auth/github` route is used to begin the authentication, and the `/auth/github/callback` is the route that handles the callback from the Github strategy. It is important to remember that the callback URL is specified within the Github developer settings for the application, as well as within the Passport strategy setup. 
+
+On a successful callback, the route handler will redirect to `/profile` where the information for the Github profile can be displayed. A useful thing to do is to test that the session is authenticated, by writing a `testAuthentication` function, and passing it into the route handler:
+```
+app.get('/profile', ensureAuthenticated, profile)
+
+function ensureAuthenticated(req,res,next){
+  if(req.isAuthenticated())
+    return next();
+  res.redirect('/');
+}
+```
+
+With the routing all set in place, the last thing to do is to make sure the frontend pages are displaying the right information. 
+####*`/routes/index.jade`
+With all the `/auth/github` routing set up, you will need to create a button for Github login in. You can put the code under the submit button, which isn't set to do anything. 
+```
+a(href='/auth/github').ui.fluid.large.blue.button
+                    i.github.icon
+                    | Sign in with GitHub
+``
+
+####*`/routes/users.js`*
+Within this file, the router middleware will be used to render the user profile page. 
+```
+router.get('/users', function(req, res, next) {
+  res.render('users', { title: "Profile Page", user: req.user });
+});
+```
+
+####*`/views/users.jade`*
+And lastly here is where the profile information from Github will be displayed. The information is passed through req.user in JSON format with the name `user` so it is straightforward to take the information out. 
+```
+extends layout
+
+block content
+    .ui.middle.aligned.center.aligned.grid
+        .column
+            h1.ui.teal.header Profile Information
+            .form.ui.large
+                .ui.stacked.segment
+                    .field
+                      label Username
+                        .ui.right.input.fluid
+                            input(type="text", name="username", value='#{user.username}')
+                    .field
+                        label Name
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user.displayName}')
+                    .field
+                        label URL
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user.profileUrl}')
+                    .field
+                        label Email
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user._json.email}')
+                    .field
+                        label Number of Public Repos
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user._json.public_repos}')
+```
+And with that you should be all done your Node.js application, with Github authentication!
+
+![profile page](/public/images/profile-page.png)
 
 
 

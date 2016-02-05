@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    .ui.middle.aligned.center.aligned.grid
+        .column
+            h1.ui.teal.header Profile Information
+            .form.ui.large
+                .ui.stacked.segment
+                    .field
+                      label Username
+                        .ui.right.input.fluid
+                            input(type="text", name="username", value='#{user.username}')
+                    .field
+                        label Name
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user.displayName}')
+                    .field
+                        label URL
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user.profileUrl}')
+                    .field
+                        label Email
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user._json.email}')
+                    .field
+                        label Number of Public Repos
+                        .ui.right.input.fluid
+                            input(type="text", name="name", value='#{user._json.public_repos}')
+
+            
