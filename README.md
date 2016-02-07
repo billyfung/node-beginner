@@ -16,6 +16,9 @@ Open browser to [http://localhost:3000](http://localhost:3000) to see the applic
 
 ![login](/public/images/login.png)
 
+#Overview
+Set up a basic login page homepage with GitHub authentication via `passport-github`, no database integration, just GitHub authentication, and display the information from GitHub profile.
+
 ##Detailed Introduction
 
 If you've been wanting to try out Node.js for awhile, but haven't found a concise enough tutorial to walk you through a simple Node.js application, here's another one you can try. The tutorial will hopefully walk you through setting up a Node.js app where users can sign up or log in through GitHub. 
@@ -388,6 +391,8 @@ After all this is done, your app should be deployed properly! It should look som
 
 ##What next?
 Now that you have the basics of Node.js and authentication down, you can build your application further by having database integration, so you can save user login information and create accounts for the app. Depending on your application purposes, PostgreSQL is a good start. You can check out [this tutorial](http://mherman.org/blog/2015/02/12/postgresql-and-nodejs/#.VrUasYQWxeo) for some further examples. 
+
+
 
 
 
